@@ -1,16 +1,73 @@
-# React + Vite
+# SocialXspark Billing Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A professional invoice generation and billing suite built with React (Vite) and Node.js.
 
-Currently, two official plugins are available:
+![SocialXspark Invoice](https://via.placeholder.com/800x400?text=SocialXspark+Billing+Platform)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+- **Professional Invoice Generation:** Create detailed invoices with custom branding.
+- **PDF Export:** Generate high-quality PDF invoices for print or email using the integrated backend service.
+- **Invoice Management:** Create, Read, Update, and Delete invoices.
+- **Live Preview:** Real-time preview of the invoice as you edit.
+- **Tax & Commission:** Configurable GST and Agency Commission settings.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Project Structure
 
-## Expanding the ESLint configuration
+The project is divided into two main parts:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **`socialx-invoice/`**: The Frontend application (React + Vite + Tailwind CSS).
+- **`backend/`**: The implementation of the API service (Node.js + Express + PDFKit).
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v18 or higher)
+- npm (v9 or higher)
+
+### 1. Start the Backend Server
+
+The backend handles data persistence and PDF generation.
+
+```bash
+cd backend
+npm install
+node server.js
+```
+
+> The server will start on **http://localhost:3000**
+
+### 2. Start the Frontend Application
+
+The frontend is the user interface for managing invoices.
+
+```bash
+cd socialx-invoice
+npm install
+npm run dev
+```
+
+> The application will likely start on **http://localhost:5178** (check terminal output).
+
+## API Documentation
+
+The backend provides the following RESTful endpoints:
+
+- `GET /api/invoices` - Retrieve all invoices
+- `POST /api/invoices` - Create a new invoice
+- `GET /api/invoices/:id` - Retrieve a specific invoice
+- `PUT /api/invoices/:id` - Update an invoice
+- `DELETE /api/invoices/:id` - Delete an invoice
+- `POST /api/invoices/pdf` - Generate a PDF file for an invoice
+
+## Technologies
+
+- **Frontend:** React, Vite, Tailwind CSS, Lucide Icons
+- **Backend:** Express.js, PDFKit, CORS, Body-Parser
+- **Storage:** JSON-based file system (Simple persistence)
+
+## Troubleshooting
+
+- **PDF not downloading?** Ensure the backend is running on port 3000.
+- **Styles missing?** Ensure dependencies are installed and the dev server is running.
