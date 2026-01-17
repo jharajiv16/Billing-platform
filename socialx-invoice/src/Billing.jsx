@@ -134,9 +134,9 @@ const Billing = () => {
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mt-8 pt-8 border-t-2 border-gray-100/50 backdrop-blur-sm"
+        className="mt-8 pt-8 border-t-2 border-gray-100/50 backdrop-blur-sm print:mt-0 print:pt-0 print:border-none"
       >
-        <div className="flex items-center gap-2 mb-4">
+        <div className="flex items-center gap-2 mb-4 print:hidden">
           <div className="p-1.5 bg-gradient-to-br from-orange-500 to-pink-500 rounded-lg shadow-lg shadow-orange-500/20">
             <Zap size={14} className="text-white" />
           </div>
@@ -145,7 +145,7 @@ const Billing = () => {
           </h3>
         </div>
 
-        <div className="bg-white/80 backdrop-blur-xl border border-white/20 rounded-2xl overflow-hidden shadow-2xl shadow-slate-200/50 hover:shadow-orange-100/50 transition-shadow duration-300">
+        <div className="bg-white/80 backdrop-blur-xl border border-white/20 rounded-2xl overflow-hidden shadow-2xl shadow-slate-200/50 hover:shadow-orange-100/50 transition-shadow duration-300 print:shadow-none print:border-none print:rounded-none">
           {/* Header */}
           <div className="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-4 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none"></div>
@@ -474,12 +474,12 @@ const Billing = () => {
                        initial={{ scale: 0 }}
                        animate={{ scale: 1 }}
                        transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                       className="w-24 h-24 bg-gradient-to-tr from-emerald-400 to-green-500 rounded-full mx-auto flex items-center justify-center shadow-lg shadow-green-500/30 mb-6"
+                       className="w-24 h-24 bg-gradient-to-tr from-emerald-400 to-green-500 rounded-full mx-auto flex items-center justify-center shadow-lg shadow-green-500/30 mb-6 print:hidden"
                       >
                          <CheckCircle2 className="text-white w-12 h-12" />
                       </motion.div>
-                      <h2 className="text-2xl font-black text-slate-800 mb-2">All Set!</h2>
-                      <p className="text-slate-500 mb-8 max-w-xs mx-auto">Your invoice is ready to be saved and generated. Review the preview below one last time.</p>
+                      <h2 className="text-2xl font-black text-slate-800 mb-2 print:hidden">All Set!</h2>
+                      <p className="text-slate-500 mb-8 max-w-xs mx-auto print:hidden">Your invoice is ready to be saved and generated. Review the preview below one last time.</p>
                       <InvoicePreview />
                    </div>
                 );
@@ -496,7 +496,7 @@ const Billing = () => {
       <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* Sidebar Navigation */}
-        <div className="lg:col-span-3 space-y-4">
+        <div className="lg:col-span-3 space-y-4 print:hidden">
              <div className="bg-white/80 backdrop-blur-xl rounded-2xl p-6 shadow-xl shadow-slate-200/50 border border-white/20 sticky top-8">
                 <div className="flex items-center gap-3 mb-8">
                    <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-pink-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/20 text-white font-black text-xl">S</div>
@@ -530,7 +530,7 @@ const Billing = () => {
         {/* Main Content */}
         <div className="lg:col-span-9 space-y-6">
             {/* Top Bar */}
-            <div className="flex items-center justify-between bg-white/60 backdrop-blur-md rounded-2xl p-4 border border-white/20">
+            <div className="flex items-center justify-between bg-white/60 backdrop-blur-md rounded-2xl p-4 border border-white/20 print:hidden">
                <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
                   <span className="bg-slate-100 px-2 py-0.5 rounded text-xs">Step {currentStep + 1}/{steps.length}</span>
                   <span>{steps[currentStep].name}</span>
@@ -561,7 +561,7 @@ const Billing = () => {
                    initial={{ opacity: 0, y: -10 }}
                    animate={{ opacity: 1, y: 0 }}
                    exit={{ opacity: 0 }}
-                   className="bg-red-50 text-red-600 px-4 py-3 rounded-xl border border-red-100 flex items-center gap-3"
+                   className="bg-red-50 text-red-600 px-4 py-3 rounded-xl border border-red-100 flex items-center gap-3 print:hidden"
                   >
                      <AlertCircle size={20} /> <span className="font-medium text-sm">{error}</span>
                   </motion.div>
@@ -571,7 +571,7 @@ const Billing = () => {
                    initial={{ opacity: 0, y: -10 }}
                    animate={{ opacity: 1, y: 0 }}
                    exit={{ opacity: 0 }}
-                   className="bg-emerald-50 text-emerald-600 px-4 py-3 rounded-xl border border-emerald-100 flex items-center gap-3"
+                   className="bg-emerald-50 text-emerald-600 px-4 py-3 rounded-xl border border-emerald-100 flex items-center gap-3 print:hidden"
                   >
                      <CheckCircle2 size={20} /> <span className="font-medium text-sm">{successMessage}</span>
                   </motion.div>
@@ -579,12 +579,12 @@ const Billing = () => {
             </AnimatePresence>
 
             {/* Step Content */}
-            <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-6 md:p-8 shadow-xl shadow-slate-200/50 border border-white/20 min-h-[600px] relative">
+            <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-6 md:p-8 shadow-xl shadow-slate-200/50 border border-white/20 min-h-[600px] relative print:shadow-none print:border-none print:p-0 print:min-h-0 print:bg-white">
                {renderStep()}
             </div>
 
             {/* Bottom Actions */}
-            <div className="flex gap-4 sticky bottom-8 z-20">
+            <div className="flex gap-4 sticky bottom-8 z-20 print:hidden">
                {currentStep === steps.length - 1 && (
                   <>
                      <motion.button
