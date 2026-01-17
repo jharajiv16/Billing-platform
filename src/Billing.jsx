@@ -115,8 +115,7 @@ const Billing = () => {
     { name: 'AGENCY', icon: '💼' },
     { name: 'PAYMENT', icon: '💳' },
     { name: 'REVIEW', icon: '✓' }
-  ];
-
+  ]
   const InvoicePreview = () => {
     // Calculate totals for preview
     const previewSubtotal = invoiceData.items.reduce((sum, i) => sum + i.quantity * i.rate, 0);
