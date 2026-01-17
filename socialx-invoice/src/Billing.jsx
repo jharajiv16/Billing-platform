@@ -13,7 +13,8 @@ import {
   Zap,
   LayoutTemplate,
   CreditCard,
-  Building
+  Building,
+  Percent
 } from 'lucide-react';
 import { createInvoice, updateInvoice } from './services/api';
 
