@@ -63,10 +63,9 @@ app.delete('/api/invoices/:id', (req, res) => {
   res.json({ success: true, message: 'Invoice deleted successfully' });
 });
 
-// POST /api/invoices/pdf - Generate PDF
-app.post('/api/invoices/pdf', (req, res) => {
+// Helper: Generate PDF
+const generateInvoicePDF = (invoice, res) => {
   const doc = new PDFDocument({ margin: 50 });
-  const invoice = req.body;
 
   res.setHeader('Content-Type', 'application/pdf');
   res.setHeader('Content-Disposition', `attachment; filename=invoice-${invoice.invoiceNumber}.pdf`);
@@ -76,7 +75,6 @@ app.post('/api/invoices/pdf', (req, res) => {
   // --- PDF Generation Logic ---
   
   // Header
-  // Top bar color strip (simulated with rectangle)
   doc.rect(0, 0, doc.page.width, 10).fill('#ea580c'); // orange-600
 
   // Logos and Title
@@ -95,7 +93,7 @@ app.post('/api/invoices/pdf', (req, res) => {
   doc.fillColor('#111827').font('Helvetica').text(invoice.date, 50, topMetaY + 15);
 
   doc.fillColor('#9ca3af').font('Helvetica-Bold').text('CURRENCY', 280, topMetaY, { align: 'center' });
-  doc.fillColor('#111827').font('Helvetica').text('INR / USD', 280, topMetaY + 15, { align: 'center' }); // Assuming INR/USD primarily
+  doc.fillColor('#111827').font('Helvetica').text('INR / USD', 280, topMetaY + 15, { align: 'center' });
 
   doc.fillColor('#111827').font('Helvetica-Bold').text('✓ Active', 0, topMetaY + 15, { align: 'right' });
 
@@ -142,34 +140,7 @@ app.post('/api/invoices/pdf', (req, res) => {
   doc.moveTo(50, itemY).lineTo(550, itemY).stroke('#fed7aa');
 
   // Totals
-  // Calculate on backend to be safe, or direct from req? Safer to recalc but for simply printing whatever frontend sent is ok too.
-  // Ideally, backend should validate, but here we generate PDF of what is seen.
-  // We'll trust the items but recalc totals for PDF consistency if needed, or if frontend passes totals, use them.
-  // The frontend passes 'items', let's recalc.
-  
   const subtotal = invoice.items.reduce((acc, item) => acc + (item.quantity * item.rate), 0);
-  // We need commission/gst rates if they are variable. 
-  // IMPORTANT: The frontend 'preview' sends the whole invoiceData object which might not have the totals explicitly separated or rates might be in component state.
-  // The backend integration request body example in BACKEND_INTEGRATION.md doesn't show commission/gst rate fields in the root JSON.
-  // However, looking at Billing.jsx, state has `gstRate` and `commissionRate`. These need to be passed to backend if dynamic.
-  // Assuming strict adherence to req body in MD file, we might miss them.
-  // But wait, the MD file says "Request Body: Same as POST". And POST body only had: invoiceNumber, date, sender, client, items, bank, notes.
-  // It misses gstRate/commissionRate! 
-  // I should check if I need to update the frontend to send these, or if I should just use defaults.
-  // The frontend implementation I generated *doesn't* seemingly send them to `createInvoice` fn explicitly in `invoiceData` state... wait
-  // In `Billing.jsx`:
-  // `const [invoiceData, setInvoiceData] = useState({...})`
-  // `commissionRate` and `gstRate` are separate `useState`.
-  // When `saveInvoice` is called: `createInvoice(invoiceData)` is called.
-  // So `invoiceData` DOES NOT contain `gstRate` etc.
-  // This means the saved invoice on backend will lack tax info! 
-  // And PDF generation will be wrong if we just calc subtotal.
-  
-  // FIX: For now, I will assume standard GST 18% if not present, or better yet, I should update the frontend to include them in invoiceData later.
-  // For this step, I will calculate subtotal and standard GST 18% as a fallback, or just list items.
-  // Actually, to make it "perfect", I should ideally fix the frontend to include these in the payload.
-  // But I am in Backend task. I'll stick to a robust PDF that prints what it has.
-  
   const gstRate = invoice.gstRate || 18; 
   const gstAmount = (subtotal * gstRate) / 100;
   const total = subtotal + gstAmount;
@@ -205,6 +176,20 @@ app.post('/api/invoices/pdf', (req, res) => {
   }
 
   doc.end();
+};
+
+// GET /api/invoices/:id/pdf - Generate PDF for existing invoice
+app.get('/api/invoices/:id/pdf', (req, res) => {
+  const invoice = db.getInvoice(req.params.id);
+  if (!invoice) {
+    return res.status(404).json({ error: 'Invoice not found' });
+  }
+  generateInvoicePDF(invoice, res);
+});
+
+// POST /api/invoices/pdf - Generate PDF from request body (Preview)
+app.post('/api/invoices/pdf', (req, res) => {
+  generateInvoicePDF(req.body, res);
 });
 
 app.listen(PORT, () => {

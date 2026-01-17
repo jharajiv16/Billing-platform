@@ -17,6 +17,7 @@ import {
   Percent
 } from 'lucide-react';
 import { createInvoice, updateInvoice } from './services/api';
+import QRCode from 'react-qr-code';
 
 const Billing = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -236,6 +237,30 @@ const Billing = () => {
               </div>
             </div>
           </div>
+          
+           {/* QR Code Section */}
+           <div className="bg-slate-50 p-4 border-t border-slate-100 flex items-center justify-between">
+              <div>
+                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Scan to Verify</p>
+                 <div className="bg-white p-2 rounded-lg border border-slate-200 inline-block">
+                    {invoiceId ? (
+                      <QRCode
+                      value={`${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/invoices/${invoiceId}/pdf`}
+                      size={64}
+                      className="h-16 w-16"
+                      />
+                    ) : (
+                      <div className="h-16 w-16 bg-slate-100 rounded flex items-center justify-center text-[8px] text-center text-slate-400 p-1">
+                        Save to scan
+                      </div>
+                    )}
+                 </div>
+              </div>
+              <div className="text-right">
+                  <p className="text-xs font-bold text-slate-700">Thank you for your business!</p>
+                  <p className="text-[10px] text-slate-400 mt-0.5">Please verify payment details before transfer.</p>
+              </div>
+           </div>
         </div>
       </motion.div>
     );
