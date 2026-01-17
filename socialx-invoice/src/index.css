@@ -1,0 +1,149 @@
+@import "tailwindcss";
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Print Styles - Single Page Invoice */
+@media print {
+  /* Page setup for single page */
+  @page {
+    margin: 8mm;
+    size: A4;
+  }
+
+  /* Ensure everything fits on one page */
+  body {
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  html, body {
+    height: 100%;
+  }
+
+  /* Remove all page margins */
+  .min-h-screen {
+    background: white !important;
+    padding: 0 !important;
+    min-height: auto !important;
+  }
+
+  .max-w-2xl {
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  /* Keep invoice on one page */
+  #invoice-template {
+    box-shadow: none !important;
+    page-break-inside: avoid !important;
+    page-break-after: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Prevent table from breaking */
+  table {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  table tbody {
+    display: table-row-group !important;
+  }
+
+  table tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Preserve colors and styling */
+  .bg-gradient-to-r {
+    background: linear-gradient(to right, #ea580c, #d94d05) !important;
+  }
+
+  .text-white {
+    color: white !important;
+  }
+
+  .text-orange-600 {
+    color: #ea580c !important;
+  }
+
+  .text-orange-100 {
+    color: #fed7aa !important;
+  }
+
+  .border-orange-400 {
+    border-color: #fdba74 !important;
+  }
+
+  .bg-orange-100 {
+    background-color: #fed7aa !important;
+  }
+
+  .bg-orange-50 {
+    background-color: #fff7ed !important;
+  }
+
+  .bg-blue-50 {
+    background-color: #eff6ff !important;
+  }
+
+  .border-blue-300 {
+    border-color: #93c5fd !important;
+  }
+
+  .text-blue-600 {
+    color: #2563eb !important;
+  }
+
+  .bg-yellow-50 {
+    background-color: #fefce8 !important;
+  }
+
+  .border-yellow-300 {
+    border-color: #fde047 !important;
+  }
+
+  .text-yellow-600 {
+    color: #ca8a04 !important;
+  }
+
+  .bg-gray-50 {
+    background-color: #f9fafb !important;
+  }
+
+  .bg-gray-800,
+  .bg-gray-900 {
+    background-color: #1f2937 !important;
+  }
+
+  /* Remove shadows */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    opacity: 1 !important;
+  }
+
+  /* Compact spacing for print */
+  .space-y-6 > * + * {
+    margin-top: 0 !important;
+  }
+
+  /* Hide non-invoice elements */
+  .print\:hidden {
+    display: none !important;
+  }
+}
