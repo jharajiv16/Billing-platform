@@ -18,6 +18,14 @@ import {
 } from 'lucide-react';
 import { createInvoice, updateInvoice } from './services/api';
 
+/**
+ * Main Billing Component
+ * Handles the multi-step invoice generation process including:
+ * - Details entry
+ * - Item management
+ * - Agency/Bank details
+ * - PDF preview and generation
+ */
 const Billing = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [currency] = useState('INR');
