@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import PDFDocument from 'pdfkit';
+import QRCode from 'qrcode';
 import { db } from './db.js';
 
 const app = express();
@@ -64,7 +65,7 @@ app.delete('/api/invoices/:id', (req, res) => {
 });
 
 // Helper: Generate PDF
-const generateInvoicePDF = (invoice, res) => {
+const generateInvoicePDF = async (invoice, res) => {
   const doc = new PDFDocument({ margin: 50 });
 
   res.setHeader('Content-Type', 'application/pdf');
@@ -84,6 +85,18 @@ const generateInvoicePDF = (invoice, res) => {
   doc.fontSize(24).fillColor('#111827').text('INVOICE', 0, 50, { align: 'right' });
   doc.fontSize(10).fillColor('#ea580c').text(`#${invoice.invoiceNumber}`, 0, 80, { align: 'right' });
 
+  // Generate QR Code
+  try {
+    const totalAmount = invoice.items.reduce((acc, item) => acc + (item.quantity * item.rate), 0) * (1 + (invoice.gstRate || 18)/100);
+    const qrData = `Invoice: ${invoice.invoiceNumber}\nDate: ${invoice.date}\nTotal: ${totalAmount.toFixed(2)}\nBilled To: ${invoice.client.name}`;
+    const qrBuffer = await QRCode.toBuffer(qrData, { width: 100, margin: 0 });
+    
+    // Embed QR Code (Top right, below Invoice #)
+    doc.image(qrBuffer, doc.page.width - 150, 110, { width: 100 });
+  } catch (err) {
+    console.error('QR Gen Error:', err);
+  }
+
   doc.moveDown();
   doc.rect(50, 100, 500, 1).fill('#fed7aa'); // orange-200 divider
   
@@ -92,10 +105,8 @@ const generateInvoicePDF = (invoice, res) => {
   doc.fontSize(10).fillColor('#9ca3af').font('Helvetica-Bold').text('DATE', 50, topMetaY);
   doc.fillColor('#111827').font('Helvetica').text(invoice.date, 50, topMetaY + 15);
 
-  doc.fillColor('#9ca3af').font('Helvetica-Bold').text('CURRENCY', 280, topMetaY, { align: 'center' });
-  doc.fillColor('#111827').font('Helvetica').text('INR / USD', 280, topMetaY + 15, { align: 'center' });
-
-  doc.fillColor('#111827').font('Helvetica-Bold').text('✓ Active', 0, topMetaY + 15, { align: 'right' });
+  doc.fillColor('#9ca3af').font('Helvetica-Bold').text('CURRENCY', 200, topMetaY, { align: 'left' });
+  doc.fillColor('#111827').font('Helvetica').text('INR / USD', 200, topMetaY + 15, { align: 'left' });
 
   // Addresses
   const addressY = 160;
@@ -179,17 +190,17 @@ const generateInvoicePDF = (invoice, res) => {
 };
 
 // GET /api/invoices/:id/pdf - Generate PDF for existing invoice
-app.get('/api/invoices/:id/pdf', (req, res) => {
+app.get('/api/invoices/:id/pdf', async (req, res) => {
   const invoice = db.getInvoice(req.params.id);
   if (!invoice) {
     return res.status(404).json({ error: 'Invoice not found' });
   }
-  generateInvoicePDF(invoice, res);
+  await generateInvoicePDF(invoice, res);
 });
 
 // POST /api/invoices/pdf - Generate PDF from request body (Preview)
-app.post('/api/invoices/pdf', (req, res) => {
-  generateInvoicePDF(req.body, res);
+app.post('/api/invoices/pdf', async (req, res) => {
+  await generateInvoicePDF(req.body, res);
 });
 
 app.listen(PORT, () => {
