@@ -109,7 +109,7 @@ const generateInvoicePDF = async (invoice, res) => {
   doc.fillColor('#111827').font('Helvetica').text('INR / USD', 200, topMetaY + 15, { align: 'left' });
 
   // Addresses
-  const addressY = 160;
+  const addressY = 230; // Moved down from 160 to avoid QR code overlap (QR ends at ~210)
   
   // Sender (From)
   doc.rect(50, addressY, 230, 80).fill('#fff7ed'); // orange-50
@@ -125,7 +125,7 @@ const generateInvoicePDF = async (invoice, res) => {
   doc.fillColor('#4b5563').font('Helvetica').text(invoice.client.address || '', 310, addressY + 40, { width: 230 });
 
   // Items Table
-  const tableTop = 260;
+  const tableTop = 330; // Moved down from 260 to accommodate lower address section
   doc.rect(50, tableTop, 500, 25).fill('#ffedd5'); // orange-100 header
   
   doc.fillColor('#111827').font('Helvetica-Bold');
